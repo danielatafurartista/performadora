@@ -1,0 +1,16 @@
+{
+  "reel": [
+    { "id": "cabeza", "label": "CABEZA", "text": "CABEZA", "weight": 5 },
+    { "id": "mano", "label": "MANO", "text": "MANO", "weight": 5 },
+    { "id": "pie", "label": "PIE", "text": "PIE", "weight": 5 },
+    { "id": "brazo", "label": "BRAZO", "text": "BRAZO", "weight": 5 },
+    { "id": "pierna", "label": "PIERNA", "text": "PIERNA", "weight": 5 },
+    { "id": "torso", "label": "TORSO", "text": "TORSO", "weight": 5 },
+    { "id": "ojo", "label": "OJO", "text": "OJO", "weight": 5 },
+    { "id": "boca", "label": "BOCA", "text": "BOCA", "weight": 5 },
+    { "id": "oreja", "label": "OREJA", "text": "OREJA", "weight": 5 },
+    { "id": "nariz", "label": "NARIZ", "text": "NARIZ", "weight": 5 },
+    { "id": "dedo", "label": "DEDO", "text": "DEDO", "weight": 5 },
+    { "id": "rodilla", "label": "RODILLA", "text": "RODILLA", "weight": 5 }
+  ]
+}

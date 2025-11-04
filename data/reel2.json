@@ -1,0 +1,16 @@
+{
+  "reel": [
+    { "id": "bailando", "label": "BAILANDO", "text": "BAILANDO", "weight": 5 },
+    { "id": "corriendo", "label": "CORRIENDO", "text": "CORRIENDO", "weight": 5 },
+    { "id": "saltando", "label": "SALTANDO", "text": "SALTANDO", "weight": 5 },
+    { "id": "girando", "label": "GIRANDO", "text": "GIRANDO", "weight": 5 },
+    { "id": "cayendo", "label": "CAYENDO", "text": "CAYENDO", "weight": 5 },
+    { "id": "volando", "label": "VOLANDO", "text": "VOLANDO", "weight": 5 },
+    { "id": "arrastrando", "label": "ARRASTRANDO", "text": "ARRASTRANDO", "weight": 5 },
+    { "id": "escalando", "label": "ESCALANDO", "text": "ESCALANDO", "weight": 5 },
+    { "id": "deslizando", "label": "DESLIZANDO", "text": "DESLIZANDO", "weight": 5 },
+    { "id": "retorciendo", "label": "RETORCIENDO", "text": "RETORCIENDO", "weight": 5 },
+    { "id": "doblando", "label": "DOBLANDO", "text": "DOBLANDO", "weight": 5 },
+    { "id": "alcanzando", "label": "ALCANZANDO", "text": "ALCANZANDO", "weight": 5 }
+  ]
+}

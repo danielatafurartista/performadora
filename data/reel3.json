@@ -1,0 +1,16 @@
+{
+  "reel": [
+    { "id": "playa", "label": "PLAYA", "text": "EN LA PLAYA", "weight": 5 },
+    { "id": "montana", "label": "MONTAÑA", "text": "EN LA MONTAÑA", "weight": 5 },
+    { "id": "bosque", "label": "BOSQUE", "text": "EN EL BOSQUE", "weight": 5 },
+    { "id": "ciudad", "label": "CIUDAD", "text": "EN LA CIUDAD", "weight": 5 },
+    { "id": "desierto", "label": "DESIERTO", "text": "EN EL DESIERTO", "weight": 5 },
+    { "id": "oceano", "label": "OCÉANO", "text": "EN EL OCÉANO", "weight": 5 },
+    { "id": "cielo", "label": "CIELO", "text": "EN EL CIELO", "weight": 5 },
+    { "id": "cueva", "label": "CUEVA", "text": "EN UNA CUEVA", "weight": 5 },
+    { "id": "espacio", "label": "ESPACIO", "text": "EN EL ESPACIO", "weight": 5 },
+    { "id": "jardin", "label": "JARDÍN", "text": "EN UN JARDÍN", "weight": 5 },
+    { "id": "rio", "label": "RÍO", "text": "JUNTO AL RÍO", "weight": 5 },
+    { "id": "escenario", "label": "ESCENARIO", "text": "EN UN ESCENARIO", "weight": 5 }
+  ]
+}
