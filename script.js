@@ -2,7 +2,6 @@
 
 (function () {
     const REEL_SOURCES = ['./data/reel1.json', './data/reel2.json', './data/reel3.json'];
-    const SLOTS_PER_REEL = 12;
     const REEL_RADIUS = 180;
 
     const DEFAULT_SYMBOL = {
@@ -12,8 +11,64 @@
         weight: 1
     };
 
-    function getSeed() {
-        return Math.floor(Math.random() * SLOTS_PER_REEL);
+    function getSecureRandom() {
+        if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.getRandomValues === 'function') {
+            const buffer = new Uint32Array(1);
+            window.crypto.getRandomValues(buffer);
+            return buffer[0] / 0x100000000;
+        }
+        return Math.random();
+    }
+
+    function getRandomInt(max) {
+        if (!Number.isFinite(max) || max <= 0) {
+            return 0;
+        }
+        return Math.floor(getSecureRandom() * max);
+    }
+
+    function getSeed(limit) {
+        return getRandomInt(limit);
+    }
+
+    function normalizeReelEntries(reelEntries) {
+        if (!Array.isArray(reelEntries)) {
+            return [DEFAULT_SYMBOL];
+        }
+
+        const normalized = reelEntries
+            .map((entry, index) => {
+                if (typeof entry === 'string') {
+                    const text = entry.trim();
+                    if (!text) {
+                        return null;
+                    }
+
+                    const id =
+                        text
+                            .toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/^-+|-+$/g, '') || `symbol-${index}`;
+
+                    return {
+                        id,
+                        label: text,
+                        text,
+                        weight: 1
+                    };
+                }
+
+                if (entry && typeof entry === 'object') {
+                    return entry;
+                }
+
+                return null;
+            })
+            .filter(Boolean);
+
+        return normalized.length ? normalized : [DEFAULT_SYMBOL];
     }
 
     class Reel3D {
@@ -21,6 +76,9 @@
             this.element = element;
             this.symbols = Array.isArray(symbols) && symbols.length ? symbols : [DEFAULT_SYMBOL];
             this.index = index;
+            this.totalSymbols = this.symbols.length;
+            this.slotCount = Math.min(this.totalSymbols || 1, 10);
+            this.visibleIndexes = [];
             this.currentRotation = 0;
             this.isSpinning = false;
 
@@ -36,16 +94,23 @@
             this.createSlots();
         }
 
-        createSlots() {
-            const slotAngle = 360 / SLOTS_PER_REEL;
-            const seed = getSeed();
+        createSlots(startIndex) {
+            this.cylinderEl.innerHTML = '';
+            this.visibleIndexes = [];
 
-            for (let i = 0; i < SLOTS_PER_REEL; i++) {
+            if (!this.slotCount) {
+                return;
+            }
+
+            const slotAngle = 360 / this.slotCount;
+            const start = Number.isFinite(startIndex) ? this.wrapIndex(startIndex) : this.wrapIndex(getSeed(Math.max(this.totalSymbols, 1)));
+
+            for (let i = 0; i < this.slotCount; i++) {
                 const slot = document.createElement('div');
                 slot.className = 'slot';
 
-                const symbolIndex = (seed + i) % this.symbols.length;
-                const symbol = this.symbols[symbolIndex];
+                const symbolIndex = this.wrapIndex(start + i);
+                const symbol = this.symbols[symbolIndex] || DEFAULT_SYMBOL;
 
                 const rotateX = slotAngle * i;
                 const transform = `rotateX(${rotateX}deg) translateZ(${REEL_RADIUS}px)`;
@@ -57,41 +122,51 @@
 
                 slot.appendChild(textSpan);
                 slot.dataset.symbolId = symbol.id;
+                slot.dataset.symbolIndex = String(symbolIndex);
 
                 this.cylinderEl.appendChild(slot);
+                this.visibleIndexes.push(symbolIndex);
             }
         }
 
         getCurrentSymbol() {
-            const normalizedRotation = ((this.currentRotation % 360) + 360) % 360;
-            const slotAngle = 360 / SLOTS_PER_REEL;
-            const slotIndex = Math.round(normalizedRotation / slotAngle) % SLOTS_PER_REEL;
+            if (!this.slotCount) {
+                return DEFAULT_SYMBOL;
+            }
+
+            const slotAngle = 360 / this.slotCount;
+            const rawIndex = Math.round(-this.currentRotation / slotAngle);
+            const slotIndex = ((rawIndex % this.slotCount) + this.slotCount) % this.slotCount;
 
             const slots = this.cylinderEl.querySelectorAll('.slot');
             if (slots[slotIndex]) {
-                const symbolId = slots[slotIndex].dataset.symbolId;
-                return this.symbols.find(s => s.id === symbolId) || DEFAULT_SYMBOL;
+                const symbolIdx = this.visibleIndexes[slotIndex];
+                if (symbolIdx !== undefined && this.symbols[symbolIdx]) {
+                    return this.symbols[symbolIdx];
+                }
             }
             return DEFAULT_SYMBOL;
         }
 
         spin(targetSymbol, duration) {
-            if (this.isSpinning) return Promise.resolve(targetSymbol);
+            if (this.isSpinning) return Promise.resolve(this.getCurrentSymbol());
+            if (!this.slotCount) return Promise.resolve(this.getCurrentSymbol());
 
             this.isSpinning = true;
             this.element.classList.add('spinning');
 
             return new Promise((resolve) => {
-                const slotAngle = 360 / SLOTS_PER_REEL;
+                const slotAngle = 360 / this.slotCount;
 
-                const slots = Array.from(this.cylinderEl.querySelectorAll('.slot'));
-                const targetSlotIndex = slots.findIndex(slot => slot.dataset.symbolId === targetSymbol.id);
-
-                let finalSlotIndex = targetSlotIndex >= 0 ? targetSlotIndex : 0;
+                const targetIndex = this.resolveSymbolIndex(targetSymbol);
+                const finalSlotIndex = getRandomInt(this.slotCount);
+                this.setWindowForTarget(targetIndex, finalSlotIndex);
+                this.cylinderEl.style.transform = `translateX(-50%) translateY(-50%) rotateX(${this.currentRotation}deg)`;
 
                 // Normalize current rotation to prevent accumulation
                 const normalizedCurrent = this.currentRotation % 360;
-                const fullRotations = 10 + this.index;
+                const extraRotations = getRandomInt(6);
+                const fullRotations = 10 + this.index + extraRotations;
                 const targetRotation = -(fullRotations * 360 + finalSlotIndex * slotAngle);
 
                 const keyframeName = `spin-reel-${this.index}-${Date.now()}`;
@@ -118,9 +193,46 @@
 
                     document.head.removeChild(styleSheet);
 
-                    resolve(targetSymbol);
+                    resolve(this.getCurrentSymbol());
                 }, duration * 1000);
             });
+        }
+
+        resolveSymbolIndex(symbol) {
+            if (!symbol) {
+                return this.visibleIndexes[0] ?? 0;
+            }
+
+            const directIndex = this.symbols.indexOf(symbol);
+            if (directIndex >= 0) {
+                return directIndex;
+            }
+
+            if (symbol.id) {
+                const byId = this.symbols.findIndex((item) => item.id === symbol.id);
+                if (byId >= 0) {
+                    return byId;
+                }
+            }
+
+            return this.visibleIndexes[0] ?? 0;
+        }
+
+        setWindowForTarget(targetIndex, finalSlotIndex) {
+            if (!this.totalSymbols || !this.slotCount) {
+                return;
+            }
+
+            const normalizedTarget = this.wrapIndex(targetIndex);
+            const normalizedSlot = Math.max(0, Math.min(this.slotCount - 1, finalSlotIndex));
+            const startIndex = this.wrapIndex(normalizedTarget - normalizedSlot);
+
+            this.createSlots(startIndex);
+        }
+
+        wrapIndex(value) {
+            const modulus = this.totalSymbols || 1;
+            return ((value % modulus) + modulus) % modulus;
         }
 
         setHighlight(active) {
@@ -164,12 +276,7 @@
                 )
             );
 
-            return responses.map((payload) => {
-                if (!payload || !Array.isArray(payload.reel)) {
-                    return [DEFAULT_SYMBOL];
-                }
-                return payload.reel;
-            });
+            return responses.map((payload) => normalizeReelEntries(payload?.reel));
         }
 
         bindEvents() {
@@ -218,7 +325,7 @@
 
         pickWeightedSymbol(symbols) {
             const totalWeight = symbols.reduce((sum, symbol) => sum + (Number(symbol.weight) || 1), 0);
-            let threshold = Math.random() * totalWeight;
+            let threshold = getSecureRandom() * totalWeight;
 
             for (let i = 0; i < symbols.length; i++) {
                 const weight = Number(symbols[i].weight) || 1;
