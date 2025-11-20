@@ -29,6 +29,13 @@ body {
   min-height: 100vh;
 }
 
+@media (max-width: 768px) {
+  body {
+    padding: 20px 10px;
+    align-items: flex-start;
+  }
+}
+
 .app-shell {
   position: relative;
   width: min(900px, 100%);
@@ -44,6 +51,12 @@ body {
   padding: 40px 30px;
 }
 
+@media (max-width: 768px) {
+  .app-content {
+    padding: 20px 15px;
+  }
+}
+
 header {
   text-align: center;
   margin-bottom: 40px;
@@ -51,14 +64,42 @@ header {
   border-bottom: 2px solid var(--text-black);
 }
 
+@media (max-width: 900px) {
+  header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+}
+
 header h1 {
   margin: 0;
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 500;
   color: var(--text-black);
   font-family: "Courier New", Courier, monospace;
+}
+
+@media (max-width: 768px) {
+  header h1 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    letter-spacing: 1px;
+  }
 }
 
 .machine-layout {
@@ -67,10 +108,46 @@ header h1 {
   gap: 30px;
 }
 
+@media (max-width: 900px) {
+  .machine-layout {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .machine-layout {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .machine-layout {
+    gap: 10px;
+  }
+}
+
 .reels-panel {
   display: flex;
   flex-direction: column;
   gap: 30px;
+}
+
+@media (max-width: 900px) {
+  .reels-panel {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reels-panel {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reels-panel {
+    gap: 10px;
+  }
 }
 
 .info-display {
@@ -88,6 +165,48 @@ header h1 {
   perspective: 1200px;
 }
 
+@media (max-width: 900px) {
+  .reels {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px 10px;
+    perspective: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reels {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px 10px;
+    perspective: 800px;
+  }
+}
+
+@media (max-width: 600px) {
+  .reels {
+    grid-template-columns: 1fr !important;
+    gap: 15px;
+    padding: 15px 10px;
+    perspective: 800px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reels {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+    padding: 12px 8px;
+    perspective: 700px;
+  }
+}
+
+@media screen and (max-width: 900px) and (orientation: portrait) {
+  .reels {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 .runner-glow {
   display: none;
 }
@@ -97,6 +216,24 @@ header h1 {
   height: 300px;
   background: transparent;
   overflow: visible;
+}
+
+@media (max-width: 900px) {
+  .reel {
+    height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reel {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reel {
+    height: 140px;
+  }
 }
 
 .reel-window {
@@ -133,6 +270,20 @@ header h1 {
   background: rgba(145, 10, 10, 0.05);
   pointer-events: none;
   z-index: 15;
+}
+
+@media (max-width: 900px) {
+  .reel-window::after {
+    height: 70px;
+    border-width: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reel-window::after {
+    height: 60px;
+    border-width: 2px;
+  }
 }
 
 .reel.reel-win .reel-window::after {
@@ -184,6 +335,20 @@ header h1 {
   backface-visibility: hidden;
 }
 
+@media (max-width: 900px) {
+  .slot {
+    height: 70px;
+    margin-top: -35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slot {
+    height: 60px;
+    margin-top: -30px;
+  }
+}
+
 .slot .symbol-text {
   font-size: clamp(1.2rem, 3vw, 1.8rem);
   line-height: 1.3;
@@ -194,6 +359,21 @@ header h1 {
   font-family: "Courier New", Courier, monospace;
   text-align: center;
   padding: 0 10px;
+}
+
+@media (max-width: 768px) {
+  .slot .symbol-text {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    padding: 0 8px;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 480px) {
+  .slot .symbol-text {
+    font-size: clamp(0.75rem, 2vw, 1rem);
+    padding: 0 5px;
+  }
 }
 
 .reel-strip {
@@ -224,6 +404,26 @@ button {
   text-transform: uppercase;
   letter-spacing: 2px;
   transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+  button {
+    padding: 16px 32px;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 280px;
+  }
 }
 
 button:hover:not(:disabled) {
@@ -277,6 +477,23 @@ button.active:hover {
   line-height: 1.5;
 }
 
+@media (max-width: 768px) {
+  .message-area {
+    min-height: 70px;
+    padding: 20px 15px;
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-area {
+    min-height: 60px;
+    padding: 15px 10px;
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  }
+}
+
 .message-area.win {
   color: var(--primary-red);
   background: rgba(145, 10, 10, 0.1);
@@ -305,6 +522,23 @@ button.active:hover {
   pointer-events: none;
   z-index: 1000;
   text-align: center;
+  max-width: 90vw;
+}
+
+@media (max-width: 768px) {
+  .notification {
+    padding: 30px 25px;
+    border-width: 3px;
+    max-width: 85vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification {
+    padding: 25px 20px;
+    border-width: 2px;
+    max-width: 90vw;
+  }
 }
 
 .notification.visible {
@@ -330,11 +564,40 @@ button.active:hover {
   font-family: "Courier New", Courier, monospace;
 }
 
+@media (max-width: 768px) {
+  .notification .title {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification .title {
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+}
+
 .notification .body {
   font-size: 1.3rem;
   color: var(--text-black);
   font-weight: 700;
   font-family: "Courier New", Courier, monospace;
+}
+
+@media (max-width: 768px) {
+  .notification .body {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification .body {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
 }
 
 .footer-note {
@@ -345,38 +608,5 @@ button.active:hover {
   .app-shell {
     border-width: 2px;
   }
-
-  .reels {
-    padding: 20px 15px;
-    gap: 15px;
-  }
-
-  .reel-window {
-    height: 240px;
-  }
-
-  .slot .symbol-emoji {
-    font-size: 2.5rem;
-  }
-
-  button {
-    padding: 12px 20px;
-    font-size: 0.9rem;
-  }
-
-  .info-value {
-    font-size: 1.5rem;
-  }
-
-  .notification {
-    padding: 30px 40px;
-  }
-
-  .notification .title {
-    font-size: 2rem;
-  }
-
-  .notification .body {
-    font-size: 1.1rem;
-  }
 }
+
