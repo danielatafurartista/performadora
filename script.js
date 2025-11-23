@@ -245,9 +245,15 @@
             this.reelEls = options.reelEls || [];
             this.spinButton = options.spinButton;
             this.messageEl = options.messageEl;
+            this.notificationEl = options.notificationEl;
+            this.notificationBodyEl = options.notificationBodyEl;
+            this.questionsSectionEl = options.questionsSectionEl;
+            this.closeNotificationBtn = options.closeNotificationBtn;
+            this.nextStepButton = options.nextStepButton;
 
             this.reels = [];
             this.isSpinning = false;
+            this.currentStep = 1;
         }
 
         async init() {
@@ -257,7 +263,7 @@
                 const reelsData = await this.loadReelData();
                 this.reels = this.reelEls.map((element, index) => new Reel3D(element, reelsData[index] || [], index));
                 this.bindEvents();
-                this.setMessage('Press SPIN to generate!', 'ready');
+                this.setMessage('Presiona el botón para generar!', 'ready');
             } catch (error) {
                 console.error(error);
                 this.setMessage('Failed to load. Serve with local server (e.g., npx serve)', 'loss');
@@ -285,6 +291,27 @@
                     this.spinOnce();
                 });
             }
+
+            if (this.closeNotificationBtn) {
+                this.closeNotificationBtn.addEventListener('click', () => {
+                    this.hideNotification();
+                });
+            }
+
+            if (this.nextStepButton) {
+                this.nextStepButton.addEventListener('click', () => {
+                    this.nextStep();
+                });
+            }
+
+            // Close notification when clicking outside
+            if (this.notificationEl) {
+                this.notificationEl.addEventListener('click', (e) => {
+                    if (e.target === this.notificationEl) {
+                        this.hideNotification();
+                    }
+                });
+            }
         }
 
         async spinOnce() {
@@ -295,7 +322,7 @@
             this.isSpinning = true;
             this.clearHighlights();
             this.spinButton && (this.spinButton.disabled = true);
-            this.setMessage('Generating...', 'pending');
+            this.setMessage('Generando...', 'pending');
 
             const chosenSymbols = this.reels.map((reel) => this.pickWeightedSymbol(reel.symbols));
 
@@ -321,6 +348,84 @@
 
             const message = `${bodyPart} ${action} ${place}`;
             this.setMessage(message, 'win');
+
+            // Show popup after 2 seconds
+            setTimeout(() => {
+                this.showNotification(bodyPart, action, place);
+            }, 2000);
+        }
+
+        showNotification(bodyPart, action, place) {
+            if (!this.notificationEl || !this.notificationBodyEl || !this.questionsSectionEl) {
+                return;
+            }
+
+            // Reset to step 1
+            this.currentStep = 1;
+            this.showStep(1);
+
+            const prompt = `${bodyPart} ${action} ${place}`;
+            this.notificationBodyEl.textContent = prompt;
+
+            // Generate questions with injected values
+            const questions = [
+                `¿Que significa ${bodyPart.toLowerCase()} para ti?`,
+                `¿Que emociones o memorias guarda ${bodyPart.toLowerCase()}?`,
+                `¿Como resuena esta parte del cuerpo con el gesto (${action.toLowerCase()})?`,
+                `¿Que implica hacer esto ${place.toLowerCase()}?`
+            ];
+
+            this.questionsSectionEl.innerHTML = questions.map((q, index) =>
+                `<div class="question-item">${q}</div>`
+            ).join('');
+
+            // Update button text
+            if (this.nextStepButton) {
+                this.nextStepButton.textContent = 'Siguiente';
+            }
+
+            this.notificationEl.classList.add('visible');
+        }
+
+        showStep(stepNumber) {
+            // Hide all steps
+            const steps = this.notificationEl.querySelectorAll('.step-view');
+            steps.forEach(step => {
+                step.style.display = 'none';
+            });
+
+            // Show the current step
+            const currentStepEl = this.notificationEl.querySelector(`#step${stepNumber}`);
+            if (currentStepEl) {
+                currentStepEl.style.display = 'block';
+            }
+        }
+
+        nextStep() {
+            if (this.currentStep < 3) {
+                this.currentStep++;
+                this.showStep(this.currentStep);
+
+                // Update button text for step 3
+                if (this.currentStep === 3 && this.nextStepButton) {
+                    this.nextStepButton.textContent = 'Cerrar';
+                }
+            } else {
+                // Step 3: Close the notification
+                this.hideNotification();
+            }
+        }
+
+        hideNotification() {
+            if (this.notificationEl) {
+                this.notificationEl.classList.remove('visible');
+                // Reset to step 1 for next time
+                this.currentStep = 1;
+                this.showStep(1);
+                if (this.nextStepButton) {
+                    this.nextStepButton.textContent = 'Siguiente';
+                }
+            }
         }
 
         pickWeightedSymbol(symbols) {
@@ -362,7 +467,12 @@
         const slotMachine = new SlotMachine({
             reelEls: Array.from(document.querySelectorAll('.reel')),
             spinButton: document.getElementById('spinButton'),
-            messageEl: document.getElementById('messageArea')
+            messageEl: document.getElementById('messageArea'),
+            notificationEl: document.getElementById('notification'),
+            notificationBodyEl: document.getElementById('notificationBody'),
+            questionsSectionEl: document.getElementById('questionsSection'),
+            closeNotificationBtn: document.getElementById('closeNotification'),
+            nextStepButton: document.getElementById('nextStepButton')
         });
 
         slotMachine.init();
