@@ -27,6 +27,35 @@ body {
   justify-content: center;
   padding: 40px 20px;
   min-height: 100vh;
+  position: relative;
+}
+
+.author-title {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(0.9rem, 2.5vw, 1.75rem);
+  color: var(--text-black);
+  font-weight: 400;
+  letter-spacing: 1px;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .author-title {
+    top: 15px;
+    left: 15px;
+    font-size: clamp(0.75rem, 3vw, 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .author-title {
+    top: 10px;
+    left: 10px;
+    font-size: clamp(0.75rem, 3vw, 1rem);
+  }
 }
 
 @media (max-width: 768px) {
