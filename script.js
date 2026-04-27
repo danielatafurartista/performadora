@@ -371,7 +371,7 @@
             const questions = [
                 `¿Qué significa ${bodyPart.toLowerCase()} para tí?`,
                 `¿Qué emociones o memorias guarda ${bodyPart.toLowerCase()}?`,
-                `¿Cémo resuena esta parte del cuerpo con el gesto (${action.toLowerCase()})?`,
+                `¿Cómo resuena esta parte del cuerpo con el gesto (${action.toLowerCase()})?`,
                 `¿Qué implica hacer esto ${place.toLowerCase()}?`
             ];
 
