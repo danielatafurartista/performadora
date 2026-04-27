@@ -369,10 +369,10 @@
 
             // Generate questions with injected values
             const questions = [
-                `¿Que significa ${bodyPart.toLowerCase()} para ti?`,
-                `¿Que emociones o memorias guarda ${bodyPart.toLowerCase()}?`,
-                `¿Como resuena esta parte del cuerpo con el gesto (${action.toLowerCase()})?`,
-                `¿Que implica hacer esto ${place.toLowerCase()}?`
+                `¿Qué significa ${bodyPart.toLowerCase()} para tí?`,
+                `¿Qué emociones o memorias guarda ${bodyPart.toLowerCase()}?`,
+                `¿Cémo resuena esta parte del cuerpo con el gesto (${action.toLowerCase()})?`,
+                `¿Qué implica hacer esto ${place.toLowerCase()}?`
             ];
 
             this.questionsSectionEl.innerHTML = questions.map((q, index) =>
